@@ -9,15 +9,23 @@ Shows location and version info from one or more packages.
 
 from __future__ import print_function
 
+import os
 import sys
 
 __version__ = '0.0.1'
+
+def _compress_home(path):
+    home = os.path.expanduser('~')
+    if path.startswith(home):
+        path = '~' + path[len(home):]
+    return path
 
 def pkg_info(name):
     """Get package info"""
     pkg = __import__(name)
     info = {}
-    info['__file__'] = pkg.__file__
+    info['__file__'] = _compress_home(pkg.__file__)
+    
     for key in dir(pkg):
         if 'version' not in key.lower():
             continue
